@@ -1,0 +1,428 @@
+# Intelligent Task Management App - Development Roadmap
+
+## 🎯 Project Overview
+This mobile app helps users manage daily routines like work, exercise, and rest, while intelligently scheduling personal development tasks (e.g., programming projects, online courses) during rest periods based on energy levels. It solves the problem of time-consuming manual planning by using AI to create optimized schedules, suggest task issues, interact with users on progress, and integrate with GitHub for issue management, Markdown/Obsidian for note storage, and SMS for notifications. Target users are individuals seeking efficient personal productivity with AI assistance.
+
+## 🏗️ Architecture Analysis
+Based on your project requirements, I've identified **4 main phases**:
+
+1. **📋 Phase 1: Backend Foundation (Server-side)** - Focuses on building the core API, database, authentication, and initial AI integration for task scheduling and suggestions.
+   - Sub-phases: API Development & Database Design, Authentication & Security, AI Integration Setup, Business Logic Implementation.
+
+2. **📋 Phase 2: Mobile App Core Development (Client-side)** - Develops the Flutter-based mobile interface for user interactions, core screens, and local storage.
+   - Sub-phases: App Architecture & Navigation, Core Screens & Components, Local Storage & State Management, API Integration & Network Layer.
+
+3. **📋 Phase 3: Integration & Advanced Features** - Handles integrations with external services like GitHub API, SMS, Markdown/Obsidian sync, and advanced AI features for interactive suggestions.
+   - Sub-phases: Third-party Integrations, Advanced AI & Real-time Features, Performance Optimization, Frontend-Backend Full Integration.
+
+4. **📋 Phase 4: Testing, Deployment & Launch** - Ensures quality through testing, sets up deployment, and prepares for app store release with monitoring.
+   - Sub-phases: Comprehensive Testing Strategy, DevOps & CI/CD Setup, Production Deployment, Monitoring & Maintenance Setup.
+
+This architecture ensures a logical progression from backend core to mobile UI, then integrations, and finally deployment, allowing for early testing of AI scheduling while accommodating your mobile-first approach and AI dependencies.
+
+## 🛠️ Technology Stack
+**Backend:**
+- Framework: FastAPI
+- Database: PostgreSQL + SQLAlchemy
+- AI Integration: An AI Python SDK (OpenAI, Grok, Claude)
+- Authentication: OAuth2 + JWT
+- Task Queue: Celery + Redis (for background tasks)
+- WebSocket: FastAPI WebSocket support (for real-time updates)
+- API Documentation: Swagger/OpenAPI (built-in)
+- Validation: Pydantic models
+- Testing: pytest + httpx
+- Deployment: Docker + Linux Server
+
+**Frontend:**
+- Framework: Flutter (Dart)
+- State Management: Mobx
+- HTTP Client: Dio + Retrofit
+- Local Database: SQLite + drift
+- Authentication: JWT storage + flutter_secure_storage
+- Push Notifications: Firebase Cloud Messaging (FCM) Or Self-hosted XMPP/Matrix servers with push extensions
+- Local Notifications: flutter_local_notifications
+- Real-time: WebSocket or Socket.io client
+- AI Chat UI: flutter_chat_ui
+- Deployment: Myket and Bazzar
+
+**Database & Storage:**
+- PostgreSQL for main data; SQLite for local mobile storage; Markdown/Obsidian for note storage with python-markdown + pymdown-extensions, mistune, watchdog, python-frontmatter, networkx.
+
+**DevOps & Deployment:**
+- Docker for containerization; Linux Server for hosting; GitPython for git operations; rsync for sync/backup.
+
+**External Integrations:**
+- AI APIs for suggestions (OpenAI/Grok/Claude); GitHub API via PyGithub, OAuth, Webhooks; SMS sending service; MD storage with file watcher and sync.
+
+## ⏰ Timeline Overview
+- **Total Duration:** 12 weeks (3 weeks backend + 4 weeks mobile + 3 weeks integration + 2 weeks testing/deployment)
+- **Estimated Hours:** 350 hours total
+- **Weekly Commitment:** ~30-35 hours/week (3 hours/day on Sat-Wed; 10 hours/day on Thu-Fri, adjusted for your availability)
+- **Recommended Schedule:** 6 days per week (Sat-Fri, with lighter Sat-Wed and focused Thu-Fri for deeper work)
+
+---
+
+## 📋 Phase 1: Backend Foundation (3 weeks)
+
+### 🎯 Phase Goals
+Establish the server-side infrastructure, including API endpoints, database schemas, authentication, and basic AI integration for task scheduling. This phase is crucial as it forms the foundation for data management and AI-driven suggestions, enabling early testing of core logic.
+
+### Week 1: Setup and Database Design
+#### 🎯 Sprint Goals
+Initialize the FastAPI project, configure database connections, and define core models for users, tasks, and schedules.
+
+#### 📝 Tasks
+**Day 1-2: Project Setup and Configuration**
+- [ ] Setup FastAPI project with Docker configuration and environment variables for development.
+- [ ] Integrate PostgreSQL with SQLAlchemy and create initial database schema for User and Task entities using Alembic migrations.
+- [ ] Implement Pydantic models for validation of user input data like task outlines and durations.
+
+**Day 3-4: Authentication Implementation**
+- [ ] Configure OAuth2 with JWT for user authentication, including password hashing with bcrypt.
+- [ ] Create API endpoints for user registration and login, with Swagger documentation.
+- [ ] Setup Celery with Redis for handling background tasks like schedule generation.
+
+**Day 5-7: Initial AI Integration**
+- [ ] Integrate AI SDK (e.g., OpenAI) to prototype basic task scheduling based on user-provided durations and energy levels.
+- [ ] Implement endpoint to receive task outlines and generate initial AI suggestions, with pytest unit tests.
+- [ ] Add WebSocket support for real-time updates on AI processing status.
+
+#### 🔍 Definition of Done
+- ✅ FastAPI server runs in Docker with PostgreSQL connection established and migrations applied.
+- ✅ Authentication endpoints return JWT tokens and handle errors with >80% test coverage via pytest and httpx.
+- ✅ AI endpoint processes sample inputs and outputs schedules, passing linting and security checks.
+
+### Week 2: Business Logic and API Development
+#### 🎯 Sprint Goals
+Build core API for task CRUD, scheduling logic, and energy-based optimizations.
+
+#### 📝 Tasks
+**Day 1-2: Task Management Endpoints**
+- [ ] Create SQLAlchemy models for Schedule and EnergyLevel entities with relationships to User and Task.
+- [ ] Implement CRUD API endpoints for tasks using FastAPI, with Pydantic validation and database persistence.
+- [ ] Add endpoint for uploading task outlines (e.g., programming projects or courses) and storing in PostgreSQL.
+
+**Day 3-4: AI Scheduling Logic**
+- [ ] Develop AI-powered endpoint to generate weekly/monthly schedules using AI SDK, incorporating rest periods and energy levels.
+- [ ] Integrate Celery tasks for asynchronous AI calls to handle complex scheduling computations.
+- [ ] Setup API documentation updates and add validation for AI input parameters.
+
+**Day 5-7: Security and Testing**
+- [ ] Implement JWT middleware for protected endpoints and role-based access.
+- [ ] Write integration tests with pytest for task creation and scheduling flows.
+- [ ] Optimize database queries with SQLAlchemy for performance in schedule generation.
+
+#### 🔍 Definition of Done
+- ✅ CRUD operations for tasks function correctly with AI-generated schedules, verified by tests covering >85% code.
+- ✅ Celery tasks execute asynchronously without errors, and WebSocket notifies on completion.
+- ✅ All endpoints documented in Swagger and pass security audits for JWT handling.
+
+### Week 3: Initial Integrations and Refinement
+#### 🎯 Sprint Goals
+Add basic external service hooks and refine backend for phase handover.
+
+#### 📝 Tasks
+**Day 1-2: GitHub API Setup**
+- [ ] Integrate PyGithub for basic GitHub authentication and issue creation endpoints.
+- [ ] Create API to suggest issues based on AI analysis of user progress descriptions.
+- [ ] Setup webhook endpoints for GitHub events like issue updates.
+
+**Day 3-4: SMS and MD Storage Foundations**
+- [ ] Integrate SMS service API for notification sending in background via Celery.
+- [ ] Setup Markdown parsing with mistune and frontmatter for task notes storage in database.
+- [ ] Implement file watcher with watchdog for initial MD sync logic.
+
+**Day 5-7: Refinement and Testing**
+- [ ] Add error handling and logging for AI and external API calls.
+- [ ] Conduct full backend testing with httpx for simulated integrations.
+- [ ] Document backend APIs comprehensively in Swagger.
+
+#### 🔍 Definition of Done
+- ✅ GitHub and SMS endpoints trigger correctly with AI suggestions, tested end-to-end.
+- ✅ MD storage handles parsing and sync without data loss, with >90% test coverage.
+- ✅ Backend is stable, passing all pytest suites and ready for mobile integration.
+
+---
+
+## 📋 Phase 2: Mobile App Core Development (4 weeks)
+
+### 🎯 Phase Goals
+Build the Flutter mobile app's core structure, including UI components, state management, and basic API connections for task viewing and input. This phase focuses on user-facing features to enable interaction with the backend.
+
+### Week 1: App Setup and Architecture
+#### 🎯 Sprint Goals
+Initialize Flutter project and set up navigation, state, and local storage.
+
+#### 📝 Tasks
+**Day 1-2: Project Initialization**
+- [ ] Setup Flutter project with Dart, Mobx for state management, and basic navigation using GoRouter.
+- [ ] Configure Dio with Retrofit for HTTP client and API calls to backend.
+- [ ] Integrate SQLite with drift for local task storage and offline support.
+
+**Day 3-4: Authentication UI**
+- [ ] Implement login/register screens with JWT handling using flutter_secure_storage.
+- [ ] Create protected routes and authentication flow with form validation.
+- [ ] Add local notifications setup with flutter_local_notifications for reminders.
+
+**Day 5-7: Core State Management**
+- [ ] Setup Mobx stores for user and task data synchronization.
+- [ ] Implement initial API integration for fetching user tasks from backend.
+- [ ] Test local database schema alignment with backend models.
+
+#### 🔍 Definition of Done
+- ✅ App launches with authentication screens, storing JWT securely and fetching sample data.
+- ✅ Mobx state updates UI reactively, with >80% widget test coverage.
+- ✅ Local SQLite persists data offline, passing integration checks.
+
+### Week 2: Core Screens Development
+#### 🎯 Sprint Goals
+Develop main UI for task management, scheduling views, and input forms.
+
+#### 📝 Tasks
+**Day 1-2: Task List and Detail Screens**
+- [ ] Create task list screen with CRUD operations using Flutter widgets and Mobx.
+- [ ] Implement detail view for tasks with energy level inputs and schedule previews.
+- [ ] Add form for uploading task outlines via Dio to backend API.
+
+**Day 3-4: Schedule Dashboard**
+- [ ] Build dashboard screen to display AI-generated schedules with calendar integration.
+- [ ] Integrate flutter_chat_ui for basic AI interaction chat interface.
+- [ ] Setup WebSocket client for real-time schedule updates from backend.
+
+**Day 5-7: UI Polish and Testing**
+- [ ] Add theme and design system for consistent UI across screens.
+- [ ] Write unit tests for Mobx stores and widget tests for screens.
+- [ ] Optimize navigation flows for smooth user experience.
+
+#### 🔍 Definition of Done
+- ✅ Task and schedule screens render data from API, with real-time updates via WebSocket.
+- ✅ Forms validate inputs and sync with local drift database.
+- ✅ Tests cover >85% of UI components, ensuring no crashes on interactions.
+
+### Week 3: Local Features and API Deep Integration
+#### 🎯 Sprint Goals
+Enhance local capabilities like offline sync and notifications.
+
+#### 📝 Tasks
+**Day 1-2: Offline Functionality**
+- [ ] Implement sync logic between SQLite and backend using Dio for conflict resolution.
+- [ ] Add offline mode detection and queueing for API calls.
+- [ ] Integrate speech_to_text for voice-based task inputs.
+
+**Day 3-4: Notifications and Reminders**
+- [ ] Setup FCM or self-hosted push notifications for task reminders.
+- [ ] Configure local notifications for energy-based alerts.
+- [ ] Test end-to-end notification flow from backend triggers.
+
+**Day 5-7: Refinement**
+- [ ] Add file picker for MD notes upload using file_picker.
+- [ ] Optimize app performance for data loading.
+- [ ] Conduct integration testing with backend APIs.
+
+#### 🔍 Definition of Done
+- ✅ Offline sync works seamlessly, with notifications firing correctly.
+- ✅ Voice inputs convert to tasks accurately, integrated with AI endpoint.
+- ✅ App handles network changes gracefully, with full test coverage.
+
+### Week 4: Core Polish and Handover Prep
+#### 🎯 Sprint Goals
+Finalize core mobile features and ensure readiness for integrations.
+
+#### 📝 Tasks
+**Day 1-2: AI Interaction UI**
+- [ ] Enhance flutter_chat_ui for user-AI conversations on task progress and suggestions.
+- [ ] Implement UI for displaying AI-suggested issues and schedules.
+- [ ] Add markdown renderer with flutter_markdown for note previews.
+
+**Day 3-4: State and Data Optimization**
+- [ ] Refine Mobx for efficient state handling of large schedules.
+- [ ] Setup permission_handler for file and notification access.
+- [ ] Test data consistency between local and remote.
+
+**Day 5-7: Testing and Documentation**
+- [ ] Write comprehensive widget and integration tests.
+- [ ] Document mobile code structure and API usage.
+- [ ] Simulate full user flows for task creation and scheduling.
+
+#### 🔍 Definition of Done
+- ✅ AI chat UI interacts with backend smoothly, rendering MD notes.
+- ✅ App is polished with optimized state, passing all tests >90%.
+- ✅ Ready for advanced integrations, with no major bugs.
+
+---
+
+## 📋 Phase 3: Integration & Advanced Features (3 weeks)
+
+### 🎯 Phase Goals
+Integrate external services fully, enhance AI for interactive suggestions, and optimize the full stack for performance. This phase ties everything together for a cohesive app experience.
+
+### Week 1: GitHub and SMS Integrations
+#### 🎯 Sprint Goals
+Connect GitHub for issue management and SMS for notifications.
+
+#### 📝 Tasks
+**Day 1-2: GitHub Backend Integration**
+- [ ] Enhance PyGithub to create/update issues based on AI suggestions from user progress.
+- [ ] Setup GitHub OAuth and webhooks in FastAPI for real-time sync.
+- [ ] Implement API endpoints for fetching repo data and suggesting issues.
+
+**Day 3-4: GitHub Mobile Integration**
+- [ ] Add oauth2_client in Flutter for GitHub auth.
+- [ ] Create UI screens for viewing/creating GitHub issues via API.
+- [ ] Integrate path_provider for local git operations sync.
+
+**Day 5-7: SMS Integration**
+- [ ] Configure SMS API in backend for sending reminders via Celery.
+- [ ] Add mobile UI for SMS notification preferences.
+- [ ] Test full flow: AI schedule triggers SMS on energy alerts.
+
+#### 🔍 Definition of Done
+- ✅ GitHub issues created/updated via AI, synced in app with webhooks.
+- ✅ SMS sends reliably, with mobile UI confirming receipt.
+- ✅ Integrations tested end-to-end with >85% coverage.
+
+### Week 2: Markdown/Obsidian and AI Enhancements
+#### 🎯 Sprint Goals
+Implement MD storage sync and advanced AI interactions.
+
+#### 📝 Tasks
+**Day 1-2: MD Backend Setup**
+- [ ] Use python-markdown and watchdog for real-time MD file sync to Obsidian vault.
+- [ ] Integrate networkx for graphing task relationships in MD frontmatter.
+- [ ] Create API for parsing and storing MD notes in PostgreSQL.
+
+**Day 3-4: MD Mobile Integration**
+- [ ] Add file management in Flutter with file_picker and sync indicator UI.
+- [ ] Implement flutter_markdown for rendering Obsidian notes in app.
+- [ ] Setup sync logic between mobile and backend MD storage.
+
+**Day 5-7: Advanced AI Features**
+- [ ] Enhance AI SDK for interactive suggestions (e.g., "What task next?") with conversation history.
+- [ ] Integrate real-time AI chat via WebSocket in flutter_chat_ui.
+- [ ] Optimize AI for project-specific issues (e.g., client-server programming).
+
+#### 🔍 Definition of Done
+- ✅ MD sync works bidirectionally, with graphs visualized if needed.
+- ✅ AI provides contextual suggestions in chat, tested with user queries.
+- ✅ Performance stable, with no sync conflicts.
+
+### Week 3: Optimization and Full Integration
+#### 🎯 Sprint Goals
+Optimize performance and ensure seamless frontend-backend flow.
+
+#### 📝 Tasks
+**Day 1-2: Performance Tuning**
+- [ ] Optimize SQLAlchemy queries and Celery tasks for faster AI responses.
+- [ ] Profile Flutter app for UI lag and optimize Dio calls.
+- [ ] Add caching with Redis for frequent AI suggestions.
+
+**Day 3-4: Full Stack Integration**
+- [ ] Implement end-to-end flows: User inputs progress, AI suggests issue, creates in GitHub, notifies via SMS.
+- [ ] Add error handling for all integrations.
+- [ ] Test cross-platform (Android/iOS) compatibility.
+
+**Day 5-7: Polish and Testing**
+- [ ] Refine UI/UX for AI interactions and integrations.
+- [ ] Conduct integration tests with pytest and Flutter tests.
+- [ ] Document all integration points.
+
+#### 🔍 Definition of Done
+- ✅ Full flows execute without errors, optimized for <2s response times.
+- ✅ All integrations cohesive, with >90% test coverage.
+- ✅ App ready for testing phase.
+
+---
+
+## 📋 Phase 4: Testing, Deployment & Launch (2 weeks)
+
+### 🎯 Phase Goals
+Validate the entire app through rigorous testing, set up deployment pipelines, and prepare for release. This ensures reliability and scalability post-launch.
+
+### Week 1: Comprehensive Testing
+#### 🎯 Sprint Goals
+Execute unit, integration, and user acceptance testing across stack.
+
+#### 📝 Tasks
+**Day 1-2: Backend Testing**
+- [ ] Run full pytest suite for API, AI, and integrations with coverage reports.
+- [ ] Test GitHub webhooks and SMS under load with httpx.
+- [ ] Validate MD sync and AI suggestions with edge cases.
+
+**Day 3-4: Mobile Testing**
+- [ ] Perform widget and integration tests in Flutter for all screens.
+- [ ] Test offline/online transitions and notifications on devices.
+- [ ] Simulate AI interactions and GitHub flows.
+
+**Day 5-7: End-to-End and Security Testing**
+- [ ] Conduct E2E tests for full user journeys (e.g., schedule creation to SMS).
+- [ ] Audit security for JWT, OAuth, and API vulnerabilities.
+- [ ] Gather feedback on usability and fix bugs.
+
+#### 🔍 Definition of Done
+- ✅ All tests pass with >95% coverage and no critical bugs.
+- ✅ Security checks confirm no vulnerabilities in auth or integrations.
+- ✅ E2E flows validated on multiple devices.
+
+### Week 2: Deployment and Monitoring Setup
+#### 🎯 Sprint Goals
+Deploy to production and establish monitoring.
+
+#### 📝 Tasks
+**Day 1-2: DevOps Setup**
+- [ ] Configure Docker Compose for backend and CI/CD with GitHub Actions.
+- [ ] Setup Linux server for hosting backend with PostgreSQL and Redis.
+- [ ] Prepare Flutter builds for Android deployment to Myket/Bazzar.
+
+**Day 3-4: Production Deployment**
+- [ ] Deploy backend to server and mobile app to stores with version control.
+- [ ] Integrate monitoring for AI usage, errors, and performance.
+- [ ] Setup backups for database and MD storage using rsync.
+
+**Day 5-7: Post-Launch Prep**
+- [ ] Test production environment with sample data.
+- [ ] Document deployment guide and maintenance procedures.
+- [ ] Plan for initial user onboarding.
+
+#### 🔍 Definition of Done
+- ✅ App deployed and accessible, with monitoring dashboards active.
+- ✅ Builds pass store reviews, and backups automated.
+- ✅ Launch-ready with no deployment issues.
+
+---
+
+## 🚀 Quick Start Guide
+### Prerequisites
+- Install Docker, Flutter SDK, PostgreSQL, Redis, and Dart.
+- Create accounts for GitHub, AI SDK (OpenAI/Grok/Claude), SMS service, Myket/Bazzar.
+- Set up Linux server for deployment.
+
+### Getting Started
+1. Clone repo and run Docker for backend setup: `docker-compose up`.
+2. Initialize Flutter project: `flutter pub get` and run on emulator.
+3. Verify first milestone: Authenticate user, create task, and see AI schedule.
+
+## 📊 Success Metrics
+### Technical Metrics
+- API response time <2s; Test coverage >95%; Uptime 99.9%.
+- Code quality: No critical lint errors; AI accuracy >85% in suggestions.
+- App performance: Load times <1s per screen.
+
+### Business Metrics
+- User retention: 70% after first week; Feature usage: 80% engage with AI scheduling.
+- Task completion rate: Increase by 50% via intelligent suggestions.
+
+## 🎯 Next Steps After Completion
+- Potential Phase 5: Add web dashboard for desktop access.
+- Scaling: Implement auto-scaling for backend on cloud if user base grows.
+- Maintenance: Regular AI model updates and bug fixes via GitHub issues.
+
+## 📋 Risk Assessment & Mitigation
+### Potential Challenges
+- AI integration delays due to API rate limits or accuracy issues.
+- Timeline slips from limited weekday hours or integration bugs.
+- Experience gaps in advanced Flutter or AI tuning.
+
+### Mitigation Strategies
+- Use mock AI responses for testing; Buffer extra Thu-Fri time for delays.
+- Break tasks into smaller chunks; Refer to docs for tech (e.g., FastAPI/Flutter guides).
+- Allocate learning time in weeks; Have fallback APIs for SMS/GitHub.
